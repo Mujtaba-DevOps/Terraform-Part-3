@@ -16,5 +16,5 @@ variable "ec2_volume_type" {
 
 
 variable "env" {
-    default = "dev" 
+    default = "prd" 
 }

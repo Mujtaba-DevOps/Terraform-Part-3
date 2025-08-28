@@ -6,7 +6,7 @@ terraform {
     }
   }
   # This is for terraform state backend
-  /*
+ 
   backend "s3"{
     bucket = "my-new-terraform-infra-bucket"
     key = "terraform.tfstate"
@@ -14,6 +14,6 @@ terraform {
     dynamodb_table = "my-terraform-infra-table"
     user_lockfile = true
   }
-  */
+ 
   
 }

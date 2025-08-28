@@ -1,7 +1,7 @@
 # key pair login 
 
 resource aws_key_pair my_key{
-    key_name = "terra-ec2-key"
+    key_name = "${var.env}-terra-ec2-key"
     public_key = file("terra-ec2-key.pub")
 } 
 
@@ -12,7 +12,7 @@ resource aws_default_vpc deafult {
 }
 
 resource aws_security_group my_security_group {
-    name = "automate-sg"
+    name = "${var.env}-automate-sg"
     description = "this will add a TF genrated Security group"
     vpc_id  = aws_default_vpc.deafult.id #interpolation
 
@@ -62,7 +62,7 @@ egress{
 
 
 tags = {
-    Name = "automate-sg"
+    Name = "${var.env}-automate-sg"
 }
 }
 
@@ -72,16 +72,12 @@ resource "aws_instance" "my_instance"  {
     #this is for each
     for_each = {
         terra-in-coding-automate-micro = "t2.micro"
-        terra-in-coding-automate-medium = "t2.medium"
-        terra-in-coding-automate-small = "t2.small"
     }
-    #this count 
-    count = 3
+    
     key_name = aws_key_pair.my_key.key_name
     security_groups = [aws_security_group.my_security_group.name]
     ami = var.ec2_ami_id #ubuntu
-    instance_type = var.ec2_aws_type
-    #instance_type = var.value
+    instance_type = each.value
 
     user_data = file("install_nginx.sh")
 
@@ -90,8 +86,8 @@ resource "aws_instance" "my_instance"  {
         volume_type = var.ec2_volume_type
     }
     tags = {
-        Name = "Instance-${count.index + 1}"
         Name = each.key
+        Environment = var.env
     }
 }
 
